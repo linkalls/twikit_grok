@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import TYPE_CHECKING, AsyncGenerator
 
+from .content import GeneratedContent
 from .utils import build_grok_history, extract_image_prompts
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ class GrokConversation:
         history = build_grok_history(items)
         self.history = history
 
-    async def generate(
+    async def stream(
         self,
         message,
         file_attachments: list | None = None,
@@ -81,6 +82,15 @@ class GrokConversation:
             'sender': 2,
             'fileAttachments': response_attachments
         })
+
+    async def generate(
+        self, message, file_attachments: list | None = None,
+        model: str = 'grok-2a', image_generation_count: int = 4
+    ) -> GeneratedContent:
+        """Generates content.
+        """
+        chunks = [c async for c in self.stream(message, file_attachments, model, image_generation_count)]
+        return GeneratedContent(self._client, chunks)
 
     def __repr__(self) -> str:
         return f'<GrokConversation id="{self.id}">'

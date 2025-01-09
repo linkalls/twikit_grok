@@ -1,4 +1,5 @@
 from .client import Client
+from .content import Attachment, GeneratedContent
 from .conversation import GrokConversation
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
