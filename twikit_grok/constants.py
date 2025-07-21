@@ -34,4 +34,5 @@ class Endpoint:
     CREATE_GROK_CONVERSATION = 'https://x.com/i/api/graphql/vvC5uy7pWWHXS2aDi1FZeA/CreateGrokConversation'
     GROK_CONVERSATION_ITEMS_BY_REST_ID = 'https://x.com/i/api/graphql/nuCH8TfQbItLdaiNCCfQ_Q/GrokConversationItemsByRestId'
     GROK_ATTACHMENT = 'https://x.com/i/api/2/grok/attachment.json'
-    GROK_ADD_RESPONSE = 'https://api.x.com/2/grok/add_response.json'
+    GROK_ADD_RESPONSE = 'https://grok.x.com/2/grok/add_response.json'
+    USE_SHARE_GROK_CONVERSATION_MUTATION = 'https://x.com/i/api/graphql/VjcMAfH8MXzaWoNmAsUidw/useShareGrokConversationMutation'

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import json
+from urllib.parse import urlparse
 
 import twikit
 from twikit.utils import flatten_params
@@ -74,6 +75,10 @@ class Client(twikit.Client):
         }
         headers = self._base_headers
         headers['content-type'] = 'text/plain;charset=UTF-8'
+
+        tid = self.client_transaction.generate_transaction_id(method='POST', path=urlparse(Endpoint.GROK_ADD_RESPONSE).path)
+        headers['X-Client-Transaction-Id'] = tid
+
         async with self.http.stream(
             'POST',
             Endpoint.GROK_ADD_RESPONSE,
