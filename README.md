@@ -18,12 +18,16 @@ It allows you to programmatically create conversations, generate text and image 
 
 ## Installation
 
-This library is not yet published to a package manager. To use it, you can clone this repository and import directly from the `src` directory.
+This package is available on both JSR (the JavaScript Registry) and NPM. For Bun and Deno users, **JSR is the recommended** choice.
 
-In the future, you will be able to install it via:
+### JSR (Recommended)
 ```bash
-# Not yet available
-bun add twikit-grok-ts
+bunx jsr add @ptt/twikit-grok-ts
+```
+
+### NPM
+```bash
+bun add @potetotown/twikit-grok-ts
 ```
 
 ## Authentication
@@ -36,22 +40,18 @@ Set the `TWITTER_COOKIE` environment variable to your full cookie string from yo
 export TWITTER_COOKIE='ct0=...; auth_token=...; ...'
 ```
 
-The client will automatically pick up this environment variable.
+The client will automatically use this environment variable if no cookie is passed to the constructor.
 
 ## Quick Start
 
-Here’s a quick example of how to use the library. Make sure you have set the `TWITTER_COOKIE` environment variable before running the script.
+Here’s a quick example of how to use the library. Make sure you have set the `TWITTER_COOKIE` environment variable before running.
 
 ```typescript
-// examples/quick-start.ts
-import { Client } from './src/index';
+import { Client } from '@ptt/twikit-grok-ts';
 
-const client = new Client({
-    // The client constructor will look for the TWITTER_COOKIE env var
-    // if the `cookies` option is not provided. For clarity, we can
-    // pass it explicitly.
-    cookies: process.env.TWITTER_COOKIE
-});
+// The client constructor will automatically use the `TWITTER_COOKIE`
+// environment variable if the `cookies` option is not provided.
+const client = new Client();
 
 async function main() {
     try {
@@ -82,9 +82,4 @@ async function main() {
 }
 
 main();
-```
-
-To run the example from the root of the project:
-```bash
-bun run examples/quick-start.ts
 ```

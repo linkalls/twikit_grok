@@ -1,12 +1,28 @@
 {
-  "name": "/app",
-  "module": "index.ts",
+  "name": "@potetotown/twikit-grok-ts",
+  "version": "0.1.0",
+  "description": "A TypeScript client for the Grok API on X (formerly Twitter), running on Bun.",
   "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
   },
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+  "devDependencies": {
+    "bun-types": "latest",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "grok",
+    "twitter",
+    "x",
+    "api",
+    "bun",
+    "typescript"
+  ],
+  "license": "MIT",
+  "jsr": "@ptt/twikit-grok-ts"
 }
