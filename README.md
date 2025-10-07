@@ -1,67 +1,90 @@
-# twikit_grok 
-Extension for using Grok with Twikit.
+# twikit-grok-ts
 
-## Installing
-```
-pip install twikit_grok
-```
+A complete TypeScript rewrite of the original `twikit_grok` library, designed to run on [Bun](https://bun.sh/). This library provides a robust, type-safe client for interacting with the internal Grok API on X (formerly Twitter).
 
-## Quick Example
+It allows you to programmatically create conversations, generate text and image responses, stream answers, and manage conversation history, all without dependencies on Python or the original `twikit` library.
 
+## Features
 
-### Streaming
-```python
-import asyncio
-from twikit_grok import Client
+- **Type-Safe:** Fully written in TypeScript for better developer experience and code quality.
+- **Modern Tech:** Built on Bun, using its native `fetch` for HTTP requests.
+- **Zero Python Dependencies:** A complete standalone rewrite.
+- **Core Grok Functionality:**
+    - Create and retrieve conversations.
+    - Stream responses chunk by chunk.
+    - Generate complete responses (non-streaming).
+    - Upload and generate image attachments.
+    - Download generated images and extract prompts.
 
-USERNAME = 'example_user'
-EMAIL = 'email@example.com'
-PASSWORD = 'password0000'
+## Installation
 
-client = Client('en-US')
+This library is not yet published to a package manager. To use it, you can clone this repository and import directly from the `src` directory.
 
-async def main():
-    # Login to an account
-    if os.path.exists('cookies.json'):
-        client.load_cookies('cookies.json')
-    else:
-        await client.login(
-            auth_info_1=USERNAME,
-            auth_info_2=EMAIL,
-            password=PASSWORD
-        )
-        client.save_cookies('cookies.json')
-
-    # Create a new conversation
-    conversation = await client.create_grok_conversation()
-    # Generate a response
-    async for chunk in conversation.stream('hello'):
-        print(chunk)
-
-    # Generate a response with images
-    attachments = [
-        await client.upload_grok_attachment('image1.jpg'),
-        await client.upload_grok_attachment('image2.jpg')
-    ]
-    async for chunk in conversation.stream('please describe these images', attachments):
-        print(chunk)
-
-
-    # Continue from an existing conversation
-    conversation = await client.get_grok_conversation('123456789')  # Get conversation by ID
-    async for chunk in conversation.stream('hello'):
-        print(chunk)
-
-asyncio.run(main())
+In the future, you will be able to install it via:
+```bash
+# Not yet available
+bun add twikit-grok-ts
 ```
 
-### Non Streaming
+## Authentication
 
-```python
-conversation = await client.create_grok_conversation()
-content = await conversation.generate('generate images of cats.')
-await content.attachments[0].download('image.jpg')
+The library authenticates using your account's cookie. For security, it's highly recommended to provide the cookie via an environment variable rather than hardcoding it in your script.
 
-content2 = await conversation.generate('hello')
-print(content2.message)
+Set the `TWITTER_COOKIE` environment variable to your full cookie string from your browser's developer tools (when logged into X.com).
+
+```bash
+export TWITTER_COOKIE='ct0=...; auth_token=...; ...'
+```
+
+The client will automatically pick up this environment variable.
+
+## Quick Start
+
+Here’s a quick example of how to use the library. Make sure you have set the `TWITTER_COOKIE` environment variable before running the script.
+
+```typescript
+// examples/quick-start.ts
+import { Client } from './src/index';
+
+const client = new Client({
+    // The client constructor will look for the TWITTER_COOKIE env var
+    // if the `cookies` option is not provided. For clarity, we can
+    // pass it explicitly.
+    cookies: process.env.TWITTER_COOKIE
+});
+
+async function main() {
+    try {
+        console.log("Creating a new Grok conversation...");
+        const conversation = await client.createGrokConversation();
+        console.log(`New conversation created with ID: ${conversation.id}`);
+
+        console.log("\nGenerating a response for 'What is Bun.sh?'...");
+        const content = await conversation.generate('What is Bun.sh?');
+        console.log("Grok's response:", content.message);
+
+        console.log("\nGenerating an image of 'a teddy bear on a skateboard'...");
+        const imageContent = await conversation.generate('a teddy bear on a skateboard');
+
+        if (imageContent.attachments.length > 0) {
+            const image = imageContent.attachments[0];
+            const downloadPath = './skateboard_bear.jpg';
+            console.log(`Image generated! Downloading to ${downloadPath}...`);
+            await image.download(downloadPath);
+            console.log("Download complete.");
+        } else {
+            console.log("Grok did not generate an image this time.");
+        }
+
+    } catch (error) {
+        console.error("An error occurred:", error);
+    }
+}
+
+main();
+```
+
+To run the example from the root of the project:
+```bash
+bun run examples/quick-start.ts
 ```
